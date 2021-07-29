@@ -21,14 +21,14 @@ class BitmapFlowPagingSource(private val renderer: PdfRenderer) : PagingSource<I
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Bitmap> {
         return try {//params.key
-            val key = params.key ?: return LoadResult.Error(Throwable("PDF reader error"))
+            val key = params.key ?: 0
             LoadResult.Page(
-                data = bitmaps,
+                data = listOf(bitmaps[key]),
                 prevKey = null,
-                nextKey = renderer.pageCount
+                nextKey = key + 1
             )
         } catch (exception: Exception) {
-            return LoadResult.Error(Throwable("Network error"))
+            return LoadResult.Error(Throwable("Reading of values error"))
         }
     }
 

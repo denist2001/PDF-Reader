@@ -39,10 +39,10 @@ class PageProviderViewModel : ViewModel() {
             val pagingSource = BitmapFlowPagingSource(renderer)
             Pager(
                 config = PagingConfig(
-                    pageSize = 10,
+                    pageSize = 1,
                     enablePlaceholders = true,
-                    prefetchDistance = 2,
-                    initialLoadSize = 2
+                    prefetchDistance = 1,
+                    initialLoadSize = 1
                 ),
                 pagingSourceFactory = { pagingSource }
             ).flow.collectLatest {
