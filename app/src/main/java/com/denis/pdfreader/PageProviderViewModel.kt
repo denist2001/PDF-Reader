@@ -18,7 +18,7 @@ import kotlinx.coroutines.withContext
 class PageProviderViewModel : ViewModel() {
 
     private lateinit var renderer: PdfRenderer
-    private lateinit var page: PdfRenderer.Page
+    private val pagingSource = BitmapFlowPagingSource()
 
     private val _bitmapsFlow = MutableSharedFlow<PagingData<Bitmap>>()
     val bitmap: Flow<PagingData<Bitmap>>
@@ -36,7 +36,7 @@ class PageProviderViewModel : ViewModel() {
             fileDescriptor ?: return@withContext
 
             renderer = PdfRenderer(fileDescriptor)
-            val pagingSource = BitmapFlowPagingSource(renderer)
+            pagingSource.setRenderer(renderer)
             Pager(
                 config = PagingConfig(
                     pageSize = 1,
@@ -52,7 +52,6 @@ class PageProviderViewModel : ViewModel() {
     }
 
     fun close() {
-        page.close()
         renderer.close()
     }
 }

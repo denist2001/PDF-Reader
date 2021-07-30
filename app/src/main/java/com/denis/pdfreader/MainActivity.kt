@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.denis.pdfreader.ui.main.MainFragment
+import com.denis.pdfreader.ui.main.PdfPagesFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openDocument(documentUri: Uri) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, MainFragment.newInstance(documentUri))
+            .replace(R.id.container, PdfPagesFragment.newInstance(documentUri))
             .commitNow()
     }
 }

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 
-class MainAdapter : PagingDataAdapter<Bitmap, PdfPageViewHolder>(DiffCallback()) {
+class PageDataAdapter : PagingDataAdapter<Bitmap, PdfPageViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PdfPageViewHolder {
         return PdfPageViewHolder.create(parent)
