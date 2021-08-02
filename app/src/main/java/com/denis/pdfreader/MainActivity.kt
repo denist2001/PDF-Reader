@@ -17,11 +17,6 @@ class MainActivity : AppCompatActivity() {
             addCategory(Intent.CATEGORY_OPENABLE)
         }
         startActivityForResult(intent, OPEN_DOCUMENT_REQUEST_CODE)
-        /*if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commitNow()
-        }*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {

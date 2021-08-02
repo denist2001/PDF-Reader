@@ -2,6 +2,7 @@ package com.denis.pdfreader.ui.main
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.denis.pdfreader.PageProviderViewModel
-import com.denis.pdfreader.R
 import com.denis.pdfreader.databinding.MainFragmentBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -37,13 +38,15 @@ class PdfPagesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.main_fragment, container, false)
+        binding = MainFragmentBinding.inflate(layoutInflater)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = MainFragmentBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this).get(PageProviderViewModel::class.java)
+        mainAdapter.stateRestorationPolicy =
+            RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
         with(binding.pdfPagerRv) {
             layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -52,11 +55,19 @@ class PdfPagesFragment : Fragment() {
         val uriArgument = arguments?.getString(DOCUMENT_URI_ARGUMENT) ?: return
 
         lifecycleScope.launch {
-            viewModel.bitmap.collectLatest { bitmap ->
-                mainAdapter.submitData(bitmap)
+            mainAdapter.loadStateFlow.collectLatest {
+                Log.d("Adapter state flow", it.toString())
             }
         }
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
+            viewModel.bitmapsFlow.collectLatest { bitmap ->
+                //that solved the problem
+                lifecycleScope.launch {
+                    mainAdapter.submitData(bitmap)
+                }
+            }
+        }
+        lifecycleScope.launch {
             viewModel.loadFirstPage(requireContext(), uriArgument)
         }
     }
